@@ -46,6 +46,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    int ret;
     clock_t init, end;
     double times[execs];
     int *arr = (int*)malloc(sizeof(int)*size);
@@ -62,16 +63,21 @@ int main(int argc, char *argv[]) {
         }
         init = clock();
         switch (alg) {
-            case 0: MergeSort(arr, size); break;
-            //case 1: MergeSortMPI(); break;
-            //case 2: MergeSortOMP(); break;
-            //case 3: MergeSortOddEven(); break;
-            //case 4: BubbleSortOddEven(); break;
+            case 0: ret = MergeSort(arr, size); break;
+            //case 1: ret = MergeSortMPI(); break;
+            case 2: ret = MergeSortOMP(arr, size, p); break;
+            //case 3: ret = MergeSortOddEven(); break;
+            //case 4: ret = BubbleSortOddEven(); break;
         }
         end = clock();
+        if (ret == 0) {
+            printf("\nFalha ao executar algoritmo de execução!\n");
+            free(arr);
+            return 3;
+        }
         for (size_t j=0; j<size-1; j++) {
             if (arr[j] > arr[j+1]) {
-                printf("\nFalha na ordenação da execução %d\n", i);
+                printf("\nFalha na ordenação da execução %d!\n", i);
                 free(arr);
                 return 3;
             }

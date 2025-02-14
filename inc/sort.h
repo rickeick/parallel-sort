@@ -8,14 +8,14 @@
         "BubbleSort com Odd-Even"
     };
 
-    void MergeSort(int *, int);
+    int MergeSort(int *, int);
 
-    void MergeSortMPI();
+    int MergeSortMPI();
 
-    void MergeSortOMP();
+    int MergeSortOMP();
 
-    void MergeSortOddEven();
+    int MergeSortOddEven();
     
-    void BubbleSortOddEven();
+    int BubbleSortOddEven();
 
 #endif
