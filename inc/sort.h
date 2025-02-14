@@ -12,7 +12,7 @@
 
     int MergeSortMPI();
 
-    int MergeSortOMP();
+    int MergeSortOMP(int *arr, int n, int t);
 
     int MergeSortOddEven();
     
