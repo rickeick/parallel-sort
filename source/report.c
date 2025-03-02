@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <dirent.h>
 
-#include "inc/utils.h"
-#include "inc/sllist.h"
+#include "sllist.h"
+#include "utils.c"
 
 typedef struct _logfile_ {
     int alg;
@@ -57,10 +57,10 @@ int main(int argc, const char *argv[]) {
         printf("Parâmetros:\n");
         printf("\t<algoritmo>\n");
         printf("Algoritmos:\n");
-        printf("\t[A1] MergeSort com MPI\n");
-        printf("\t[A2] MergeSort com OMP\n");
-        printf("\t[A3] MergeSort com Odd-Even\n");
-        printf("\t[A4] BubbleSort com Odd-Even\n");
+        printf("\t[A1] MergeSort MPI\n");
+        printf("\t[A2] MergeSort OMP\n");
+        printf("\t[A3] MergeSort Odd-Even\n");
+        printf("\t[A4] BubbleSort Odd-Even\n");
         return 1;
     }
 
@@ -101,7 +101,7 @@ int main(int argc, const char *argv[]) {
     snprintf(filepath, 64, "./reports/report-%s.txt", alg);
     FILE *file = fopen(filepath, "w");
     if (file == NULL) {
-        printf("Falha ao abrir arquivo!\n");
+        printf("\nFalha ao abrir arquivo!\n");
         sllDestroy(logs_parallel, freeLog);
         sllDestroy(logs_serial, freeLog);
         return 2;
@@ -127,6 +127,7 @@ int main(int argc, const char *argv[]) {
             fprintf(file, "\t\tEficiência: %lf\n", efficiency);
         }
     }
+    printf("Relatório para o algoritmo paralelo %s salvo!", alg);
     sllDestroy(logs_parallel, freeLog);
     sllDestroy(logs_serial, freeLog);
     freeLog(parallel);

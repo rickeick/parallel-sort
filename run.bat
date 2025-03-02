@@ -2,50 +2,69 @@
 
 CD /d "%~dp0"
 
+:: Settings
+
+SET "EXECS=10"
+SET "CORES=2 4 8"
+SET "SIZES=16777216 134217728 1073741824"
+
+:: Build
+
 if not EXIST ".\bin" (
     MKDIR ".\bin"
 )
+
+gcc .\source\merge-sort.c -o .\bin\test-A0.exe
+mpicc .\source\merge-sort-mpi.c -o .\bin\test-A1.exe
+gcc .\source\merge-sort-omp.c -o .\bin\test-A2.exe -fopenmp
+gcc .\source\merge-sort-oe.c -o .\bin\test-A3.exe -fopenmp
+gcc .\source\bubble-sort-oe.c -o .\bin\test-A4.exe -fopenmp
+
+gcc .\source\report.c .\source\sllist.c -o .\bin\report.exe
+
+:: Tests
 
 if not EXIST ".\logs" (
     MKDIR ".\logs"
 )
 
-gcc -I. -Iinc -c .\src\test.c -o .\bin\test.o
-gcc -I. -Iinc -c .\src\merge-sort.c -o .\bin\merge-sort.o
-::gcc -I. -Iinc -c .\src\merge-sort-oe.c -o .\bin\merge-sort-oe.o
-gcc -I. -Iinc -c .\src\merge-sort-omp.c -o .\bin\merge-sort-omp.o -fopenmp
-::gcc -I. -Iinc -c .\src\merge-sort-mpi.c -o .\bin\merge-sort-mpi.o
-::gcc -I. -Iinc -c .\src\bubble-sort-eo.c -o .\bin\bubble-sort-eo.o
-
-gcc .\bin\test.o .\bin\merge-sort.o .\bin\merge-sort-omp.o -o .\bin\test.exe -fopenmp
-
-DEL .\bin\test.o
-DEL .\bin\merge-sort.o
-::DEL .\bin\merge-sort-oe.o
-DEL .\bin\merge-sort-omp.o
-::DEL .\bin\merge-sort-mpi.o
-::DEL .\bin\bubble-sort-eo.o
-
-for %%i in (100000 1000000 10000000) do (
-    .\bin\test.exe 10 0 %%i
+for %%I in (%SIZES%) do (
+    .\bin\test-A0.exe %EXECS% %%I
 )
 
-for %%i in (100000 1000000 10000000) do (
-    for %%j in (2 4 6) do (
-        .\bin\test.exe 10 2 %%i %%j
+for %%I in (%SIZES%) do (
+    for %%J in (%CORES%) do (
+        for /l %%K in (1, 1, %EXECS%) do (
+            mpiexec -n %%J .\bin\test-A1.exe %EXECS% %%K %%I
+        )
     )
 )
+
+for %%I in (%SIZES%) do (
+    for %%J in (%CORES%) do (
+        .\bin\test-A2.exe %EXECS% %%I %%J
+    )
+)
+
+for %%I in (%SIZES%) do (
+    for %%J in (%CORES%) do (
+        .\bin\test-A3.exe %EXECS% %%I %%J
+    )
+)
+
+for %%I in (%SIZES%) do (
+    for %%J in (%CORES%) do (
+        .\bin\test-A4.exe %EXECS% %%I %%J
+    )
+)
+
+:: Reports
 
 if not EXIST ".\reports" (
     MKDIR ".\reports"
 )
 
-gcc -I. -Iinc -c .\src\report.c -o .\bin\report.o
-gcc -I. -Iinc -c .\src\sllist.c -o .\bin\sllist.o
-
-gcc .\bin\report.o .\bin\sllist.o -o .\bin\report.exe
-
-DEL .\bin\report.o
-DEL .\bin\sllist.o
-
+.\bin\report.exe A1
 .\bin\report.exe A2
+.\bin\report.exe A3
+.\bin\report.exe A4

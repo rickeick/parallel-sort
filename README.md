@@ -1,5 +1,10 @@
 ## Laboratório de Algoritmos de Ordenação Paralelo
 
+### Equipe
+- Rick Eick Vieira Dos Santos
+- Victor José Beltrão Almajano Martinez
+- Juan Carlos Melo do Nascimento
+
 ### Objetivo
 Possibilitar a experimentação e o aprendizado de conceitos relacionados a computação paralela, bem como implementação de algoritmos de ordenação em máquinas paralelas de memória compartilhada, com atenção para a dependência de dados.
 

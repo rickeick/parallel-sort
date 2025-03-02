@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-#include "inc/sllist.h"
+#include "sllist.h"
 
 typedef struct _sllist_ {
     SLNode *first;
