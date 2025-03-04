@@ -55,8 +55,12 @@ int main(int argc, const char *argv[]) {
     #endif
     if (argc != 2) {
         printf("Parâmetros:\n");
-        printf("\t<algoritmo>\n");
-        printf("Algoritmos:\n");
+        printf("\t<algoritmo_serial>\n");
+        printf("\t<algoritmo_paralelo>\n");
+        printf("Algoritmos Seriais:\n");
+        printf("\t[A0] MergeSort\n");
+        printf("\t[A5] BubbleSort\n");
+        printf("Algoritmos Paralelos:\n");
         printf("\t[A1] MergeSort MPI\n");
         printf("\t[A2] MergeSort OMP\n");
         printf("\t[A3] MergeSort Odd-Even\n");
@@ -67,7 +71,8 @@ int main(int argc, const char *argv[]) {
     int s=0, p=0;
     char filepath[64];
     struct dirent *entry;
-    const char *alg = argv[1];
+    const char *alg_s = argv[1];
+    const char *alg_p = argv[2];
     DIR *dir = opendir("./logs");
     if (dir == NULL) {
         printf("Falha ao abrir diretório!\n");
@@ -83,9 +88,9 @@ int main(int argc, const char *argv[]) {
     while ((entry = readdir(dir)) != NULL) {
         if (strstr(entry->d_name, ".log") != NULL) {
             snprintf(filepath, 64, "./logs/%s", entry->d_name);
-            if (strstr(entry->d_name, "A0") != NULL) {
+            if (strstr(entry->d_name, alg_s) != NULL) {
                 sllAppend(logs_serial, (void *)readLog(filepath)); s++;
-            } else if (strstr(entry->d_name, alg) != NULL) {
+            } else if (strstr(entry->d_name, alg_p) != NULL) {
                 sllAppend(logs_parallel, (void *)readLog(filepath)); p++;
             }
         }
@@ -98,7 +103,7 @@ int main(int argc, const char *argv[]) {
     double speedup, efficiency;
     double avg_serial, sd_serial;
     double avg_parallel, sd_parallel;
-    snprintf(filepath, 64, "./reports/report-%s.txt", alg);
+    snprintf(filepath, 64, "./reports/report-%s-%s.txt", alg_s, alg_p);
     FILE *file = fopen(filepath, "w");
     if (file == NULL) {
         printf("\nFalha ao abrir arquivo!\n");
@@ -106,7 +111,7 @@ int main(int argc, const char *argv[]) {
         sllDestroy(logs_serial, freeLog);
         return 2;
     }
-    fprintf(file, "Relatório para %s\n", alg);
+    fprintf(file, "Relatório para %s/%s\n", alg_s, alg_p);
     for (size_t i=0; i<s; i++) {
         serial = (LogFile *)sllGetNext(logs_serial);
         avg_serial = avg(serial->times, serial->exes);
@@ -127,7 +132,7 @@ int main(int argc, const char *argv[]) {
             fprintf(file, "\t\tEficiência: %lf\n", efficiency);
         }
     }
-    printf("Relatório para o algoritmo paralelo %s salvo!", alg);
+    printf("Relatório para  %s/%s salvo!", alg_s, alg_p);
     sllDestroy(logs_parallel, freeLog);
     sllDestroy(logs_serial, freeLog);
     freeLog(parallel);

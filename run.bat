@@ -19,6 +19,7 @@ mpicc .\source\merge-sort-mpi.c -o .\bin\test-A1.exe
 gcc .\source\merge-sort-omp.c -o .\bin\test-A2.exe -fopenmp
 gcc .\source\merge-sort-oe.c -o .\bin\test-A3.exe -fopenmp
 gcc .\source\bubble-sort-oe.c -o .\bin\test-A4.exe -fopenmp
+gcc .\source\bubble-sort.c -o .\bin\test-A5.exe
 
 gcc .\source\report.c .\source\sllist.c -o .\bin\report.exe
 
@@ -52,11 +53,17 @@ for %%I in (%SIZES%) do (
     )
 )
 
-for %%I in (%SIZES%) do (
-    for %%J in (%CORES%) do (
-        .\bin\test-A4.exe %EXECS% %%I %%J
-    )
-)
+@REM for %%I in (%SIZES%) do (
+@REM     for %%J in (%CORES%) do (
+@REM         .\bin\test-A4.exe %EXECS% %%I %%J
+@REM     )
+@REM )
+
+@REM for %%I in (%SIZES%) do (
+@REM     for %%J in (%CORES%) do (
+@REM         .\bin\test-A5.exe %EXECS% %%I %%J
+@REM     )
+@REM )
 
 :: Reports
 
@@ -64,7 +71,6 @@ if not EXIST ".\reports" (
     MKDIR ".\reports"
 )
 
-.\bin\report.exe A1
-.\bin\report.exe A2
-.\bin\report.exe A3
-.\bin\report.exe A4
+.\bin\report.exe A0 A1
+.\bin\report.exe A0 A2
+.\bin\report.exe A0 A3
